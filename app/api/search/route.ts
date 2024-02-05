@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
-    const { iata } = await req.json();
-    if (!iata) {
-        return new NextResponse("Missing iata", {
+    const { message } = await req.json();
+    if (!message) {
+        return new NextResponse("Missing message", {
             status: 400,
             headers: {
                 "Content-Type": "text/plain",
@@ -13,13 +13,15 @@ export async function POST(req: Request) {
 
     const queryLegs = [
         {
-            "originPlaceId": {
-                "iata": "HEL",
+            "originPlace": {
+                "queryPlace": {
+                    "iata": "HEL",
+                },
             },
-            "destinationPlaceId": {
-                "iata": iata,
+            "destinationPlace": {
+                "anywhere": true,
             },
-            "date": {
+            "fixedDate": {
                 "year": 2024,
                 "month": 3,
                 "day": 11
@@ -38,7 +40,7 @@ export async function POST(req: Request) {
         }
     });
 
-    const response = await fetch('https://partners.api.skyscanner.net/apiservices/v3/flights/live/search/create', {
+    const response = await fetch('https://partners.api.skyscanner.net/apiservices/v3/flights/indicative/search', {
         method: 'POST',
         headers: {
             'x-api-key': 'sh428739766321522266746152871799',
